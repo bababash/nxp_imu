@@ -92,11 +92,8 @@ class FXOS8700(I2C):
         # Active, Normal Mode, Low Noise, 100Hz in Hybrid Mode
         self.write8(FXOS8700_REGISTER_CTRL_REG1, 0x15)
 
-        # Configure the magnetometer
-        # Hybrid Mode, Over Sampling Rate = 16
-        self.write8(FXOS8700_REGISTER_MCTRL_REG1, 0x1F)
-        # Jump to reg 0x33 after reading 0x06
-        self.write8(FXOS8700_REGISTER_MCTRL_REG2, 0x20)
+        # Disable the magnetometer
+        self.write8(FXOS8700_REGISTER_MCTRL_REG1, 0x00)
 
         if verbose:
             print('=' * 40)
