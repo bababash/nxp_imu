@@ -87,13 +87,14 @@ class FXOS8700(I2C):
         else:
             raise Exception('Invalide accel range: {}'.format(gs))
 
-        # High resolution
+        # High resolution mode
         self.write8(FXOS8700_REGISTER_CTRL_REG2, 0x02)
-        # Active, Normal Mode, Low Noise, 100Hz in Hybrid Mode
-        self.write8(FXOS8700_REGISTER_CTRL_REG1, 0x15)
 
         # Disable the magnetometer
         self.write8(FXOS8700_REGISTER_MCTRL_REG1, 0x00)
+
+        # Device Active, Normal Read Mode, Low Noise (Restricted to 2g or 4g), 800Hz in accel only mode
+        self.write8(FXOS8700_REGISTER_CTRL_REG1, 0x5)
 
         if verbose:
             print('=' * 40)
@@ -122,44 +123,9 @@ class FXOS8700(I2C):
     def get(self):
         # 13 bytes: status, ax,ay, az, mx, my, mz
         # status, axhi, axlo, ayhi, aylo ... mxhi, mxlo ...
-        # data = self.read_block(0x0, 13)  # why read 0???
-        # data = data[1:]  # remove status bit
-        data = self.read_block(0x1, 12)  # do this???
 
-        # data = self.read_block(FXOS8700_REGISTER_STATUS | 0x80, 13)
-        # print('status:', data[0])
-        # data = data[1:]
-        # self.write8(FXOS8700_REGISTER_STATUS | 0x80)
-        # data = self.read_block(0x1, 12)
-        # print('raw', data)
-        # data = struct.unpack('B'*13, data)[0]
-        # print('status:', data[0])
+        data = self.read_block(0x1, 6)  # burst read X_MSB, Y_MSB, Z_MSB
 
-        # # try this, original below here ------------------------
-        # data = data[1:]
-        # form = [0]*6
-        # # print('struct', data)
-        # for i in (0, 2, 4, 6, 8, 10):
-        # 	form[i//2] = (data[i] << 8) | data[i+1]
-        #
-        # accel = form[:3]
-        # for i in range(3):
-        # 	accel[i] = accel[i] >> 2
-        # 	accel[i] = self.twos_comp(accel[i], 14) * self.scale
-        #
-        # # struct.unpack()
-        # # accel = [(x >> 2) * ACCEL_MG_LSB_2G for x in accel]  # FIXME: do for other accels
-        #
-        # mag = form[3:]
-        # # mag = [x * MAG_UT_LSB for x in mag]
-        # for i in range(3):
-        # 	mag[i] = self.twos_comp(mag[i], 16) * MAG_UT_LSB
-        # 	if -1200.0 > mag[i] > 1200.0:
-        # 		raise Exception('FXOS8700 magnetometer[{}] = {} out of range'.format(i, mag[i]))
-
-        # because MSB is first, this is bigendian
-        # if data[0] > 0:
-        # 	print('accel status reg is not zero')
         data = bytearray(data)
         data = struct.unpack('>hhhhhh', data)
 

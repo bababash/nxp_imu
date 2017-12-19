@@ -13,7 +13,7 @@ from math import sin, cos, atan2, pi, sqrt, asin
 
 
 class IMU(object):
-    def __init__(self, dps=250, gs=2, gyro_bw=100, verbose=False, bus=None):
+    def __init__(self, dps=250, gs=4, gyro_bw=100, verbose=False, bus=None):
         """
         """
         sensor_kwargs = {'bus': bus} if bus is not None else {}
