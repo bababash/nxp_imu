@@ -124,7 +124,7 @@ class FXOS8700(I2C):
         # 13 bytes: status, ax,ay, az, mx, my, mz
         # status, axhi, axlo, ayhi, aylo ... mxhi, mxlo ...
 
-        data = self.read_block(0x1, 6)  # burst read X_MSB, Y_MSB, Z_MSB
+        data = self.read_block(0x1, 12)  # burst read X_MSB, Y_MSB, Z_MSB
 
         data = bytearray(data)
         data = struct.unpack('>hhhhhh', data)
