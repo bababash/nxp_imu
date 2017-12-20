@@ -18,7 +18,7 @@ class IMU(object):
         """
         sensor_kwargs = {'bus': bus} if bus is not None else {}
         self.accel = FXOS8700(gs=gs, verbose=verbose, **sensor_kwargs)
-        self.gyro = FXAS21002(dps=dps, bw=gyro_bw, verbose=verbose, fs_double, **sensor_kwargs)
+        self.gyro = FXAS21002(dps=dps, bw=gyro_bw, verbose=verbose, fs_double=fs_double, **sensor_kwargs)
 
     def __del__(self):
         """
