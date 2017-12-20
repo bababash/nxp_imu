@@ -13,12 +13,12 @@ from math import sin, cos, atan2, pi, sqrt, asin
 
 
 class IMU(object):
-    def __init__(self, dps=250, gs=4, gyro_bw=100, verbose=False, bus=None):
+    def __init__(self, dps=250, gs=4, gyro_bw=100, fs_double=0, verbose=False, bus=None):
         """
         """
         sensor_kwargs = {'bus': bus} if bus is not None else {}
         self.accel = FXOS8700(gs=gs, verbose=verbose, **sensor_kwargs)
-        self.gyro = FXAS21002(dps=dps, bw=gyro_bw, verbose=verbose, **sensor_kwargs)
+        self.gyro = FXAS21002(dps=dps, bw=gyro_bw, verbose=verbose, fs_double, **sensor_kwargs)
 
     def __del__(self):
         """
